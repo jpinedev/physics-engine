@@ -7,6 +7,10 @@
 #include "core/UpdateContext.hpp"
 #include "core/collision/ColliderComponent.hpp"
 
+#ifdef GIZMOS
+#include "core/util/Gizmos.hpp"
+#endif
+
 GameObject::GameObject(Engine* engine) : mEngine(engine)
 {
     mTransform = new TransformComponent();
@@ -52,6 +56,16 @@ void GameObject::Render(RenderContext* renderer)
         component->Render(renderer);
     }
 }
+
+#ifdef GIZMOS
+void GameObject::DrawGizmos(RenderContext* renderer, util::Gizmos* gizmos)
+{
+    for (Component* component : mComponents)
+    {
+        component->DrawGizmos(renderer, gizmos);
+    }
+}
+#endif
 
 bool GameObject::IsColliding(ColliderComponent* other, SDL_Rect* rectangle)
 {

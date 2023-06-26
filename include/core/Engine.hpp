@@ -100,6 +100,9 @@ private:
 
     UpdateContext mUpdateCtx;
     RenderContext mRenderCtx;
+#ifdef GIZMOS
+    util::Gizmos mGizmosUtil{};
+#endif
 
     Vec2D mScreenSize;
     Vec2D mScreenCenter;

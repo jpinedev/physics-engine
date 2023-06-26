@@ -35,6 +35,11 @@ public:
      */
     virtual bool RaycastColliderRectangle() override;
 
+#ifdef GIZMOS
+    virtual void DrawGizmos(RenderContext* renderer,
+                            util::Gizmos* util) override;
+#endif
+
 protected:
     /**
      * If there is a null pointer then we search for the sprite render, if no

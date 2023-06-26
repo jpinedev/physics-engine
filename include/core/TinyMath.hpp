@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <limits>
 #include <ostream>
 #include <sstream>
 #include <string>
@@ -16,6 +17,8 @@
 // Forward references of each of the structs
 struct Vec2D;
 struct Matrix3D;
+
+const float FLOAT_MAX = std::numeric_limits<float>::max();
 
 // Vec2D performs vector operations with 3-dimensions
 // The purpose of this class is primarily for 3D graphics

@@ -8,6 +8,10 @@
 #include "core/RenderContext.hpp"
 #include "core/UpdateContext.hpp"
 
+#ifdef GIZMOS
+#include "core/util/Gizmos.hpp"
+#endif
+
 #if defined(LINUX) || defined(MINGW)
 #include <SDL2/SDL.h>
 #else  // This works for Mac
@@ -59,6 +63,10 @@ public:
      * @param renderer The render data that operates the render loop
      */
     void Render(RenderContext* renderer);
+
+#ifdef GIZMOS
+    void DrawGizmos(RenderContext* renderer, util::Gizmos* util);
+#endif
 
     /**
      * Checks if any components in this object collides with the rect

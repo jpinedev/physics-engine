@@ -70,3 +70,32 @@ void TilemapColliderComponent::FindTilemapIfNull()
 
     mData = mTilemap->GetTileMapData();
 }
+
+#ifdef GIZMOS
+void TilemapColliderComponent::DrawGizmos(RenderContext* renderer,
+                                          util::Gizmos* util)
+{
+    FindTilemapIfNull();
+
+    util->SetDrawMode(util::Gizmos::DrawMode::DM_STROKE);
+    util->SetStrokeColor({0, 0xFF, 0, 0xFF});
+
+    SDL_Rect tileRect;
+    for (unsigned int tileRowIdx = 0, tileRowEnd = mData->GetHeight();
+         tileRowIdx < tileRowEnd; ++tileRowIdx)
+    {
+        for (unsigned int tileColIdx = 0, tileColEnd = mData->GetWidth();
+             tileColIdx < tileColEnd; ++tileColIdx)
+        {
+            if (!mData->GetTile(tileColIdx, tileRowIdx).collider) continue;
+
+            mTilemap->GetTileDisplayRect(&tileRect, renderer, tileColIdx,
+                                         tileRowIdx);
+
+            util->DrawRect(tileRect);
+        }
+    }
+
+    // TODO: util->DrawRect(GetCollisionRect());
+}
+#endif

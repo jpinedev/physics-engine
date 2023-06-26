@@ -5,8 +5,8 @@ Month-long challenge to create a physics engine capable of making a simple platf
 Notes on my inital ideas for the challenge.
 
 ## Must do:
-- [ ] Incorportate graphics framework (likely SDL) for rendering rectangles in a window
-- [ ] Update loop with simple user input
+- [x] Incorportate graphics framework (likely SDL) for rendering rectangles in a window
+- [x] Update loop with simple user input
 - [ ] AABB rectangle collision
   - [ ] Add visualization for collision states
 - [ ] Game object messaging system to handle collision events

@@ -55,3 +55,15 @@ SDL_Rect SpriteColliderComponent::GetCollisionRect()
 
     return colliderRect;
 }
+
+#ifdef GIZMOS
+void SpriteColliderComponent::DrawGizmos(RenderContext* renderer,
+                                         util::Gizmos* util)
+{
+    util->SetDrawMode(util::Gizmos::DrawMode::DM_STROKE);
+    util->SetStrokeColor({0, 0xFF, 0, 0xFF});
+
+    SDL_Rect collisionRect = GetCollisionRect();
+    util->DrawRect(renderer->WorldToCamera(collisionRect));
+}
+#endif

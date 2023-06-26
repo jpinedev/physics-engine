@@ -90,6 +90,19 @@ void Engine::Render()
         pGO->Render(&mRenderCtx);
     }
 
+#ifdef GIZMOS
+    mGizmosUtil.SetFillColor({0, 0, 0, 0xFF});
+    mGizmosUtil.SetStrokeColor({0, 0, 0, 0xFF});
+    mGizmosUtil.SetRenderContext(&mRenderCtx);
+    mGizmosUtil.SetDrawMode(util::Gizmos::DrawMode::DM_NONE);
+
+    for (GameObject* pGO : mGameObjects)
+    {
+        if (!pGO->IsActive()) continue;
+        pGO->DrawGizmos(&mRenderCtx, &mGizmosUtil);
+    }
+#endif
+
     // Flip the buffer to render
     mRenderer->RenderPresent();
 }

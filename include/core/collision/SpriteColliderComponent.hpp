@@ -33,6 +33,11 @@ public:
      */
     virtual bool RaycastColliderRectangle() override;
 
+#ifdef GIZMOS
+    virtual void DrawGizmos(RenderContext* renderer,
+                            util::Gizmos* util) override;
+#endif
+
 protected:
     /**
      * Does this collider collide with the given rectangle?

@@ -1,5 +1,6 @@
 CC=clang++
 CXXFLAGS=-g -std=c++17
+DEBUGFLAGS=-D GIZMOS
 
 INCLUDES=-I./external_includes/ -I./include/ 
 LIBS=
@@ -30,6 +31,9 @@ all: game
 
 game:
 	$(CC) $(CXXFLAGS) -o $(GAMENAME) $(INCLUDES) $(CORESRC) $(GAMESRC) $(LIBS)
+
+debug:
+	$(CC) $(CXXFLAGS) $(DEBUGFLAGS) -o $(GAMENAME) $(INCLUDES) $(CORESRC) $(GAMESRC) $(LIBS)
 
 RM=rm -rf
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...

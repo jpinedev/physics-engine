@@ -46,6 +46,11 @@ public:
      */
     virtual void SetIsTrigger(bool isTrigger);
 
+#ifdef GIZMOS
+    virtual void DrawGizmos(RenderContext* renderer,
+                            util::Gizmos* util) override = 0;
+#endif
+
 protected:
     /**
      * Does this collider collide with the given rectangle?

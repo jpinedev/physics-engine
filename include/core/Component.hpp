@@ -13,6 +13,10 @@
 #include "core/RenderContext.hpp"
 #include "core/UpdateContext.hpp"
 
+#ifdef GIZMOS
+#include "core/util/Gizmos.hpp"
+#endif
+
 /**
  * An abstract base class for all components.
  *
@@ -36,31 +40,35 @@ public:
     /**
      * A destructor
      */
-    virtual ~Component();
+    virtual ~Component() {}
 
     /**
      * Receives the given message for this to consider
      * @param message The message recieved
      */
-    virtual void Receive(const std::string& message);
+    virtual void Receive(const std::string& message) {}
 
     /**
      * Returns a copy of this name
      * @return The name of this component
      */
-    std::string GetType() const;
+    std::string GetType() const { return mType; }
 
     /**
      * An update loop for a component
      * @param update The update data that operates the update loop
      */
-    virtual void Update(UpdateContext* update);
+    virtual void Update(UpdateContext* update) {}
 
     /**
      * A render loop for a component
      * @param renderer The render data that operates the render loop
      */
-    virtual void Render(RenderContext* renderer);
+    virtual void Render(RenderContext* renderer) {}
+
+#ifdef GIZMOS
+    virtual void DrawGizmos(RenderContext* renderer, util::Gizmos* util) {}
+#endif
 
     // Allow GameObject to tell the component which game object it is attached
     // to.
@@ -91,7 +99,7 @@ protected:
     /**
      * Make the class abstract by hiding all constructors as protected.
      */
-    Component(std::string type);
+    Component(std::string type) : mType(type) {}
 
     /**
      * The game object that this component is attached to.

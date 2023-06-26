@@ -73,12 +73,7 @@ void TilemapComponent::Render(RenderContext* ren)
             bool hasCollider = mMapData->GetTile(x, y).collider;
             if (currentTile > -1)
             {
-                // Render our Tile at this location
-                Dest.x = x * mDestTileWidth - ren->worldToCamera.x;
-                Dest.y = y * mDestTileHeight - ren->worldToCamera.y;
-                Dest.w = mDestTileWidth;
-                Dest.h = mDestTileHeight;
-
+                GetTileDisplayRect(&Dest, ren, x, y);
                 mTextureAtlas->DrawTileAt(ren, currentTile, Dest, hasCollider);
             }
         }
@@ -91,6 +86,15 @@ void TilemapComponent::GenerateMapFromFile(std::string filePath)
     mMapData = ResourceManager::instance().Tilemaps()->Get(filePath);
 
     mMapData->Print();
+}
+
+void TilemapComponent::GetTileDisplayRect(SDL_Rect* out_rect,
+                                          RenderContext* ren, int x, int y)
+{
+    out_rect->x = x * mDestTileWidth - ren->worldToCamera.x;
+    out_rect->y = y * mDestTileHeight - ren->worldToCamera.y;
+    out_rect->w = mDestTileWidth;
+    out_rect->h = mDestTileHeight;
 }
 
 Vec2D TilemapComponent::WorldPosToTilePos(Vec2D& worldPos)

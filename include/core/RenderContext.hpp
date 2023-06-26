@@ -15,6 +15,15 @@ struct RenderContext
     SDL_Renderer* renderer;
     Vec2D worldToCamera;
     int frameIdx;
+
+    inline SDL_Rect& WorldToCamera(SDL_Rect& rect);
 };
+
+inline SDL_Rect& RenderContext::WorldToCamera(SDL_Rect& rect)
+{
+    rect.x -= worldToCamera.x;
+    rect.y -= worldToCamera.y;
+    return rect;
+}
 
 #endif

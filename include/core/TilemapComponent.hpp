@@ -56,6 +56,9 @@ public:
      */
     Vec2D WorldPosToTilePos(Vec2D& worldPos);
 
+    void GetTileDisplayRect(SDL_Rect* out_rect, RenderContext* ren, int x,
+                            int y);
+
     /**
      * Gets the tile map data of this tile map.
      *
