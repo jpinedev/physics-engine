@@ -38,12 +38,12 @@ int main(int argc, char** argv)
     ResourceManager::instance().Spritesheets()->Load(tilemapSpritesheetLoc);
     std::shared_ptr<Spritesheet> tilemapTextureAtlas =
         ResourceManager::instance().Spritesheets()->Get(tilemapSpritesheetLoc);
-    tilemapTextureAtlas->SetSpriteSize(32, 32);
+    tilemapTextureAtlas->SetSpriteSize({32, 32});
     // Create the tilemap component
     TilemapComponent* tilemapComponent =
         engine.InstantiateComponent<TilemapComponent>(tilemapObject,
                                                       tilemapTextureAtlas);
-    tilemapComponent->SetDisplayTileSize(64, 64);
+    tilemapComponent->SetDisplayTileSize({64, 64});
     // Generate a a simple tilemap
     tilemapComponent->GenerateMapFromFile(
         "./assets/mspj-engine/tilemaps/level0");
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     // Prepare the controller
     ControllerComponent* controller =
         engine.InstantiateComponent<ControllerComponent>(player);
-    player.GetTransform().SetPosition(128, 64);
+    player.GetTransform().SetPosition({128, 64});
     // Prepare the sprite
     SpriteAnimator* sprite =
         engine.InstantiateComponent<SpriteAnimator>(player);
@@ -67,9 +67,9 @@ int main(int argc, char** argv)
     ResourceManager::instance().Spritesheets()->Load(playerSpriteheetLoc);
     std::shared_ptr<Spritesheet> characterSpritesheet =
         ResourceManager::instance().Spritesheets()->Get(playerSpriteheetLoc);
-    characterSpritesheet->SetSpriteSize(32, 32);
+    characterSpritesheet->SetSpriteSize({32, 32});
     sprite->UseSpritesheet(characterSpritesheet);
-    sprite->SetDisplaySize(32, 32);
+    sprite->SetSize({32, 32});
     sprite->SetAnimation("move_down", 0, 4);
     sprite->SetAnimation("move_up", 1, 4);
     sprite->SetAnimation("move_left", 2, 4);
@@ -91,11 +91,11 @@ int main(int argc, char** argv)
     SpriteRenderer* mushroomSprite =
         engine.InstantiateComponent<SpriteRenderer>(mushroom);
     mushroomSprite->UseSpritesheet(mushroomSpritesheet);
-    mushroomSprite->SetDisplaySize(32, 32);
+    mushroomSprite->SetSize({32, 32});
     ColliderComponent* mushroomCollider =
         engine.InstantiateComponent<SpriteColliderComponent>(mushroom);
     mushroomCollider->SetIsTrigger(true);
-    mushroom.GetTransform().SetPosition(144, 128);
+    mushroom.GetTransform().SetPosition({144, 128});
 
     // An artifact of original engine that used python for scripting.
     /*

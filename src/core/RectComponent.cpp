@@ -9,7 +9,7 @@ RectComponent::~RectComponent() {}
 
 void RectComponent::Render(RenderContext* renderer)
 {
-    const Vec2D& pos = mGameObject->GetTransform().GetPosition();
+    const auto& pos = mGameObject->GetTransform().GetPosition();
     SDL_Rect fillRect = {(int)pos.x, (int)pos.y, (int)mSize.x, (int)mSize.y};
 
     SDL_SetRenderDrawColor(renderer->renderer, mColor[0], mColor[1], mColor[2],
@@ -19,8 +19,8 @@ void RectComponent::Render(RenderContext* renderer)
 
 bool RectComponent::Intersects(const RectComponent& rect) const
 {
-    const Vec2D& thisPos = mGameObject->GetTransform().GetPosition();
-    const Vec2D& rectPos = rect.mGameObject->GetTransform().GetPosition();
+    const auto& thisPos = mGameObject->GetTransform().GetPosition();
+    const auto& rectPos = rect.mGameObject->GetTransform().GetPosition();
 
     if (thisPos.x + mSize.x < rectPos.x) return false;
     if (thisPos.y + mSize.y < rectPos.y) return false;
@@ -28,8 +28,6 @@ bool RectComponent::Intersects(const RectComponent& rect) const
     if (rectPos.y + rect.mSize.y < thisPos.y) return false;
     return true;
 }
-
-void RectComponent::SetSize(float x, float y) { mSize = {x, y}; }
 
 void RectComponent::SetColor(unsigned char r, unsigned char g, unsigned char b,
                              unsigned char a)
@@ -39,5 +37,3 @@ void RectComponent::SetColor(unsigned char r, unsigned char g, unsigned char b,
     mColor[2] = b;
     mColor[3] = a;
 }
-
-const Vec2D& RectComponent::size() const { return mSize; }

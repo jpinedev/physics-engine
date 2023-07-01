@@ -74,7 +74,7 @@ public:
      * @param rectangle The second component we are checking
      * @return If the two components collided
      */
-    bool IsColliding(ColliderComponent* collider, SDL_Rect* rectangle);
+    bool IsColliding(ColliderComponent* collider, FRect* rectangle);
 
     /**
      * Checks if component is colliding with another component
@@ -82,7 +82,7 @@ public:
      * @param rect The second component we are checking
      * @return If the two components collided
      */
-    bool RaycastCollider(ColliderComponent* collider, SDL_Rect* rect);
+    bool RaycastCollider(ColliderComponent* collider, FRect* rect);
 
     /**
      * Adds the the given component to this game object.

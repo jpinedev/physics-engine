@@ -55,6 +55,11 @@ public:
     std::string GetType() const { return mType; }
 
     /**
+     * An startup lifecycle event for a component
+     */
+    virtual void Start() {}
+
+    /**
      * An update loop for a component
      * @param update The update data that operates the update loop
      */

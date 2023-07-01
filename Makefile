@@ -5,8 +5,8 @@ DEBUGFLAGS=-D GIZMOS
 INCLUDES=-I./external_includes/ -I./include/ 
 LIBS=
 
-CORESRC=src/core/*.cpp src/core/**/*.cpp
-GAMESRC=src/game/**.cpp
+CORESRC=src/core/*.cpp src/core/*/*.cpp
+GAMESRC=src/game/*.cpp
 
 GAMENAME=creative-refresh-platformer
 

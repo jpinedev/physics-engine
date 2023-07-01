@@ -1,12 +1,12 @@
 #include "core/ControllerComponent.hpp"
 #include "core/GameObject.hpp"
 #include "core/InputManager.hpp"
-#include "core/TinyMath.hpp"
 #include "core/TransformComponent.hpp"
 #include "core/UpdateContext.hpp"
 #include "core/collision/ColliderComponent.hpp"
 
 #include <cinttypes>
+#include <glm/vec2.hpp>
 #include <iostream>
 
 ControllerComponent::ControllerComponent() : Component("controller") {}
@@ -49,8 +49,8 @@ void ControllerComponent::Update(UpdateContext* update)
         mGameObject->BroadcastMessage("move_up");
     }
 
-    Vec2D move(horizontal, vertical);
-    move = Normalize(move);
+    glm::vec2 move(horizontal, vertical);
+    move = glm::normalize(move);
     move *= mMoveSpeed * update->deltaTime;
     transform.TranslatePosition(move.x, move.y);
 

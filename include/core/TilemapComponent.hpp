@@ -26,20 +26,9 @@ public:
      */
     virtual ~TilemapComponent();
 
-    /**
-     * Set the render size of a tile.
-     *
-     * @param width the width to set
-     * @param height the width to set
-     */
-    void SetDisplayTileSize(unsigned int width, unsigned int height);
-
-    /**
-     * Draw all of the tiles in the tilemap.
-     *
-     * @param ren the render context for rendering
-     */
     virtual void Render(RenderContext* ren) override;
+
+    void SetDisplayTileSize(Size2D size) { mTileDisplaySize = size; }
 
     /**
      * Given a file, generates a tile map.
@@ -54,10 +43,10 @@ public:
      * @param worldPos the world position to convert
      * @return the tile position in Vec2D
      */
-    Vec2D WorldPosToTilePos(Vec2D& worldPos);
+    glm::vec2 WorldPosToTilePos(const glm::vec2& worldPos) const;
 
-    void GetTileDisplayRect(SDL_Rect* out_rect, RenderContext* ren, int x,
-                            int y);
+    void GetTileDisplayRect(SDL_Rect* out_rect, RenderContext* ren,
+                            TileLoc tile) const;
 
     /**
      * Gets the tile map data of this tile map.
@@ -68,8 +57,7 @@ public:
 
 private:
     // How big each tile is in the world.
-    int mDestTileWidth;
-    int mDestTileHeight;
+    Size2D mTileDisplaySize{0, 0};
     // Where our Tilemap is rendered
     // An SDL Surface contains pixel data to draw our Tilemap
     std::shared_ptr<Spritesheet>& mTextureAtlas;

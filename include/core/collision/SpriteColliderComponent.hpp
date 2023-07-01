@@ -44,7 +44,7 @@ protected:
      * @param rect The rectangle we are checking collision with
      * @return True if there was a collision, else false
      */
-    virtual bool CollidesWithRectangle(SDL_Rect* rect) override;
+    virtual bool CollidesWithRectangle(FRect* rect) override;
 
 private:
     SpriteRenderer* mSpriteRenderer = NULL;
@@ -59,7 +59,7 @@ private:
      * Gets the collider rectangle
      * @return The collider's rectangle hitbox
      */
-    SDL_Rect GetCollisionRect();
+    FRect GetCollisionRect();
 };
 
 #endif

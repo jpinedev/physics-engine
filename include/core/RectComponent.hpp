@@ -1,9 +1,9 @@
 #ifndef __RECTCOMPONENT_HPP__
 #define __RECTCOMPONENT_HPP__
 
+#include <glm/vec2.hpp>
 #include "core/Component.hpp"
 #include "core/RenderContext.hpp"
-#include "core/TinyMath.hpp"
 
 /**
  * Render a rectangle on the screen.
@@ -36,32 +36,16 @@ public:
      */
     bool Intersects(const RectComponent& rect) const;
 
-    /**
-     * Size of the rect
-     * @param w Width
-     * @param h Height
-     */
-    void SetSize(float w, float h);
+    inline void SetSize(glm::vec2 size) { mSize = size; }
 
-    /**
-     * Sets the color of the rect
-     * @param r Red
-     * @param g Green
-     * @param b Blue
-     * @param a Alpha
-     */
-    void SetColor(unsigned char r, unsigned char g, unsigned char b,
-                  unsigned char a = 0xFF);
+    inline void SetColor(unsigned char r, unsigned char g, unsigned char b,
+                         unsigned char a = 0xFF);
 
-    /**
-     * The size of the rect
-     * @return The size of the rect
-     */
-    const Vec2D& size() const;
+    const glm::vec2& GetSize() const { return mSize; }
 
 private:
     unsigned char mColor[4] = {0, 0, 0, 0xFF};
-    Vec2D mSize = {1, 1};
+    glm::vec2 mSize{1, 1};
 };
 
 #endif

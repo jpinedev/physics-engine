@@ -1,8 +1,8 @@
 #ifndef TRANSFORMCOMPONENT_HPP
 #define TRANSFORMCOMPONENT_HPP
 
+#include <glm/vec2.hpp>
 #include "core/Component.hpp"
-#include "core/TinyMath.hpp"
 
 /**
  * The component that holds information on where a game object
@@ -14,31 +14,21 @@ public:
     TransformComponent();
     virtual ~TransformComponent();
 
-    /**
-     * Returns the position of this transform.
-     *
-     * @return the Vec2D position of this transform
-     */
-    Vec2D GetPosition() const;
+    glm::vec2 GetPosition() const { return mPosition; }
 
-    /**
-     * Sets the x and y position of this transform.
-     *
-     * @param x the x position to set
-     * @param y the y position to set
-     */
-    void SetPosition(float x, float y);
-
-    /**
-     * Translates the x and y position of this transform.
-     *
-     * @param x position to translate
-     * @param y position to translate
-     */
-    void TranslatePosition(float x, float y);
+    inline void SetPosition(float x, float y) { SetPosition(x, y); }
+    inline void SetPosition(glm::vec2 pos) { mPosition = pos; }
+    inline void TranslatePosition(float x, float y)
+    {
+        TranslatePosition({x, y});
+    }
+    inline void TranslatePosition(glm::vec2 translate)
+    {
+        mPosition += translate;
+    }
 
 private:
-    Vec2D mPosition;
+    glm::vec2 mPosition{0, 0};
 };
 
 #endif

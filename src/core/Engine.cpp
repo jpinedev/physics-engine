@@ -108,7 +108,7 @@ void Engine::Render()
 }
 
 // check if colliding
-bool Engine::IsColliding(ColliderComponent* collider, SDL_Rect* rectangle)
+bool Engine::IsColliding(ColliderComponent* collider, FRect* rectangle)
 {
     // loop through gameobjects
     for (GameObject* object : mGameObjects)
@@ -197,7 +197,7 @@ void Engine::Shutdown()
 void Engine::InitializeGraphicsSubSystem()
 {
     // Setup our Renderer
-    mScreenSize = Vec2D(1280, 720);
+    mScreenSize = glm::vec2(1280, 720);
     mScreenCenter = mScreenSize * 0.5f;
     mRenderer = new SDLGraphicsEngineRenderer(mScreenSize.x, mScreenSize.y);
     if (nullptr == mRenderer)

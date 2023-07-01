@@ -1,4 +1,5 @@
 #include "core/resources/TilemapLoader.hpp"
+#include "core/resources/Spritesheet.hpp"
 #include "core/resources/TilemapData.hpp"
 
 #include <fstream>
@@ -28,28 +29,28 @@ void TilemapLoader::Load(std::string fileLoc)
         throw std::invalid_argument("Tilemap file could not be found.");
     }
 
-    int y = 0;
+    TileLoc tileLoc{0, 0};
     while (file.good() && !file.eof())
     {
         std::getline(file, line);
         if (line.empty() || file.eof()) break;
 
-        int x = 0;
+        tileLoc.x = 0;
         std::stringstream ss(line);
 
         while (ss >> tile)
         {
-            mapData.SetTile(x, y, tile);
-            x++;
+            mapData.SetTile(tileLoc, tile);
+            tileLoc.x++;
         }
-        if (x < maxCols || (maxCols != 0 && x > maxCols))
+        if (tileLoc.x < maxCols || (maxCols != 0 && tileLoc.x > maxCols))
         {
             throw std::invalid_argument(
                 "Tilemap is jagged. Tilemaps must be rectangular.");
         }
 
-        if (x > maxCols) maxCols = x;
-        ++y;
+        if (tileLoc.x > maxCols) maxCols = tileLoc.x;
+        ++tileLoc.y;
     }
 
     file.close();
@@ -80,13 +81,13 @@ void TilemapLoader::Save(std::shared_ptr<TilemapData>& resource)
         throw std::runtime_error("Could not save to file '" + fileLoc + "'");
     }
 
-    int mapWidth = mapData.GetWidth();
-    int mapHeight = mapData.GetHeight();
-    for (int row = 0; row < mapHeight; ++row)
+    Size2D mapSize = mapData.GetSize();
+    TileLoc tileLoc;
+    for (tileLoc.y = 0; tileLoc.y < mapSize.y; ++tileLoc.y)
     {
-        for (int col = 0; col < mapWidth; ++col)
+        for (tileLoc.x = 0; tileLoc.x < mapSize.x; ++tileLoc.x)
         {
-            outFile << mapData.GetTile(col, row) << ' ';
+            outFile << mapData.GetTile(tileLoc) << ' ';
         }
         outFile << std::endl;
     }

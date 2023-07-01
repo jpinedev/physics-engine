@@ -5,9 +5,9 @@
 #include <iostream>
 #endif
 
+#include <glm/vec2.hpp>
 #include <string>
 #include "core/InputManager.hpp"
-#include "core/TinyMath.hpp"
 
 inline std::string InputManager::SDL_GetKeyNameFromScancode(
     SDL_Scancode scancode)
@@ -79,7 +79,7 @@ void InputManager::HandleEvent(SDL_Event evt)
 
             if (!IsMouseButtonPressed(1)) break;
 
-            MouseDrag(Vec2D(evt.motion.xrel, evt.motion.yrel));
+            MouseDrag(glm::vec2(evt.motion.xrel, evt.motion.yrel));
             break;
         }
 
@@ -195,7 +195,7 @@ inline void InputManager::ReleaseMouseButton(int index)
     if (index == 0)
     {
         if (mIsDragging)
-            MouseDrag(Vec2D(0, 0));
+            MouseDrag(glm::vec2(0, 0));
         else
             MouseClick();
     }
@@ -213,10 +213,10 @@ inline void InputManager::MouseClick()
     }
 }
 
-inline void InputManager::MouseDrag(Vec2D deltaPos)
+inline void InputManager::MouseDrag(glm::vec2 deltaPos)
 {
     mIsDragging = true;
-    Vec2D lastPos = mMousePosition - deltaPos;
+    glm::vec2 lastPos = mMousePosition - deltaPos;
 
 #ifdef LOG_MOUSE_EVENTS
     std::cout << "Dragged from: " << std::endl;

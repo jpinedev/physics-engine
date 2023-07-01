@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "core/TinyMath.hpp"
+#include <glm/vec2.hpp>
 
 #if defined(LINUX) || defined(MINGW)
 #include <SDL2/SDL.h>
@@ -39,7 +39,7 @@ public:
      * InputManager).
      * @param mousePos The current mouse position on the screen
      */
-    virtual void HandleMouseClickEvent(Vec2D mousePos) = 0;
+    virtual void HandleMouseClickEvent(glm::vec2 mousePos) = 0;
 };
 
 /**
@@ -54,7 +54,8 @@ public:
      * @param currentPos The current position of the mouse
      * @param lastPos The last position of the mouse
      */
-    virtual void HandleMouseDragEvent(Vec2D currentPos, Vec2D lastPos) = 0;
+    virtual void HandleMouseDragEvent(glm::vec2 currentPos,
+                                      glm::vec2 lastPos) = 0;
 };
 
 /**
@@ -241,7 +242,7 @@ protected:
      * Mouse was dragged
      * @param mouseDelta The delta change of the mouse
      */
-    inline void MouseDrag(Vec2D mouseDelta);
+    inline void MouseDrag(glm::vec2 mouseDelta);
 
     /**
      * Converts the mouse button number to the mouse button index
@@ -270,7 +271,7 @@ private:
     // Stores state for each mouse button, indexed by MouseButtonNumber - 1
     bool mMouseButtonsState[5]{0, 0, 0, 0, 0};
     bool mIsDragging = false;
-    Vec2D mMousePosition{0, 0};
+    glm::vec2 mMousePosition{0, 0};
 
     std::set<IKeyEventListener*> mKeyEventListeners;
     std::set<IMouseClickEventListener*> mMouseClickEventListeners;

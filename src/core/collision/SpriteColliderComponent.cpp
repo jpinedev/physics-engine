@@ -12,18 +12,16 @@
 SpriteColliderComponent::SpriteColliderComponent() : ColliderComponent() {}
 SpriteColliderComponent::~SpriteColliderComponent() {}
 
-bool SpriteColliderComponent::CollidesWithRectangle(SDL_Rect* rect)
+bool SpriteColliderComponent::CollidesWithRectangle(FRect* rect)
 {
     FindSpriteRendererIfNull();
 
-    SDL_Rect colliderRect = GetCollisionRect();
-
-    return (SDL_HasIntersection(&colliderRect, rect) == SDL_TRUE);
+    return HasIntersection(GetCollisionRect(), *rect);
 }
 
 bool SpriteColliderComponent::RaycastColliderRectangle()
 {
-    SDL_Rect colliderRect = GetCollisionRect();
+    FRect colliderRect = GetCollisionRect();
 
     return mGameObject->RaycastCollider(dynamic_cast<ColliderComponent*>(this),
                                         &colliderRect);
@@ -43,17 +41,12 @@ void SpriteColliderComponent::FindSpriteRendererIfNull()
     }
 }
 
-SDL_Rect SpriteColliderComponent::GetCollisionRect()
+FRect SpriteColliderComponent::GetCollisionRect()
 {
     FindSpriteRendererIfNull();
 
-    Vec2D position = mGameObject->GetTransform().GetPosition();
-
-    SDL_Rect colliderRect = mSpriteRenderer->GetDisplayDimensions();
-    colliderRect.x = (int)position.x;
-    colliderRect.y = (int)position.y;
-
-    return colliderRect;
+    return {mGameObject->GetTransform().GetPosition(),
+            mSpriteRenderer->GetSize()};
 }
 
 #ifdef GIZMOS

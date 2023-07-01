@@ -7,7 +7,6 @@
 #include "core/Component.hpp"
 #include "core/IGraphicsEngineRenderer.hpp"
 #include "core/RenderContext.hpp"
-#include "core/TinyMath.hpp"
 #include "core/TransformComponent.hpp"
 #include "core/UpdateContext.hpp"
 #include "core/resources/Spritesheet.hpp"
@@ -20,19 +19,9 @@
 class SpriteRenderer : public Component
 {
 public:
-    /**
-     * Constructor
-     */
     SpriteRenderer();
-    /**
-     * Destructor
-     */
     virtual ~SpriteRenderer();
 
-    /**
-     * Render the sprite
-     * @param ren The renderer data we are using
-     */
     virtual void Render(RenderContext* ren) override;
 
     /**
@@ -45,20 +34,15 @@ public:
      * Set the index of the sprite on the spritsheet to render
      * @param index The index of the sprite
      */
-    void SetSpriteIndex(unsigned int index);
+    inline void SetSpriteIndex(unsigned int index) { mSpriteIndex = index; }
 
-    /**
-     * Set the display size of the sprite in the game
-     * @param width Width
-     * @param height Height
-     */
-    void SetDisplaySize(unsigned int width, unsigned int height);
+    inline void SetSize(Size2D size)
+    {
+        mDest.w = size.x;
+        mDest.h = size.y;
+    }
 
-    /**
-     * Gets the dimensions of the sprite
-     * @return The dimensions of the sprite
-     */
-    SDL_Rect GetDisplayDimensions();
+    Size2D GetSize() { return Size2D{mDest.w, mDest.h}; }
 
 private:
     unsigned int mSpriteIndex = 0;

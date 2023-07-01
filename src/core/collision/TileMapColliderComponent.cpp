@@ -1,6 +1,5 @@
 #include "core/collision/TilemapColliderComponent.hpp"
 #include "core/TilemapComponent.hpp"
-#include "core/TinyMath.hpp"
 #include "core/TransformComponent.hpp"
 #include "core/resources/TilemapData.hpp"
 
@@ -15,33 +14,35 @@
 TilemapColliderComponent::TilemapColliderComponent() : ColliderComponent() {}
 TilemapColliderComponent::~TilemapColliderComponent() {}
 
-bool TilemapColliderComponent::CollidesWithRectangle(SDL_Rect* rect)
+bool TilemapColliderComponent::CollidesWithRectangle(FRect* rect)
 {
     FindTilemapIfNull();
 
-    Vec2D position = mGameObject->GetTransform().GetPosition();
+    glm::vec2 position = mGameObject->GetTransform().GetPosition();
 
     // Get the top left bounds of the tile that the rectangle *COULD* collide
     // with
-    Vec2D topLeftCornerRect = Vec2D(rect->x, rect->y);
-    Vec2D topLeftTilePos = mTilemap->WorldPosToTilePos(topLeftCornerRect);
+    glm::vec2 topLeftCornerRect = glm::vec2(rect->x, rect->y);
+    glm::vec2 topLeftTilePos = mTilemap->WorldPosToTilePos(topLeftCornerRect);
 
     // Get the bottom right bounds of the tile that the rectangle *COULD*
     // collide with
-    Vec2D bottomRightCornerRect = topLeftCornerRect + Vec2D(rect->w, rect->h);
-    Vec2D bottomRightTilePos =
+    glm::vec2 bottomRightCornerRect =
+        topLeftCornerRect + glm::vec2(rect->w, rect->h);
+    glm::vec2 bottomRightTilePos =
         mTilemap->WorldPosToTilePos(bottomRightCornerRect);
 
     // Loop through all of the tiles that the rect *MAY* collide with (if it has
     // a collider)
-    for (int tilePosY = topLeftTilePos.y; tilePosY <= bottomRightTilePos.y;
-         ++tilePosY)
+    TileLoc tileLoc;
+    for (tileLoc.y = topLeftTilePos.y; tileLoc.y <= bottomRightTilePos.y;
+         ++tileLoc.y)
     {
-        for (int tilePosX = topLeftTilePos.x; tilePosX <= bottomRightTilePos.x;
-             ++tilePosX)
+        for (tileLoc.x = topLeftTilePos.x; tileLoc.x <= bottomRightTilePos.x;
+             ++tileLoc.x)
         {
-            TileData tile = mData->GetTile(tilePosX, tilePosY);
-            if (tile.collider) return true;
+            TileData tile = mData->GetTile(tileLoc);
+            if (tile.bHasCollider) return true;
         }
     }
 
@@ -81,16 +82,16 @@ void TilemapColliderComponent::DrawGizmos(RenderContext* renderer,
     util->SetStrokeColor({0, 0xFF, 0, 0xFF});
 
     SDL_Rect tileRect;
-    for (unsigned int tileRowIdx = 0, tileRowEnd = mData->GetHeight();
-         tileRowIdx < tileRowEnd; ++tileRowIdx)
-    {
-        for (unsigned int tileColIdx = 0, tileColEnd = mData->GetWidth();
-             tileColIdx < tileColEnd; ++tileColIdx)
-        {
-            if (!mData->GetTile(tileColIdx, tileRowIdx).collider) continue;
 
-            mTilemap->GetTileDisplayRect(&tileRect, renderer, tileColIdx,
-                                         tileRowIdx);
+    Size2D tilemapSize = mData->GetSize();
+    TileLoc tileLoc;
+    for (tileLoc.y = 0; tileLoc.y < tilemapSize.y; ++tileLoc.y)
+    {
+        for (tileLoc.x = 0; tileLoc.x < tilemapSize.x; ++tileLoc.x)
+        {
+            if (!mData->GetTile(tileLoc).bHasCollider) continue;
+
+            mTilemap->GetTileDisplayRect(&tileRect, renderer, tileLoc);
 
             util->DrawRect(tileRect);
         }

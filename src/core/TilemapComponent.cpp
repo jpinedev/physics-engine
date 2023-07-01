@@ -1,4 +1,5 @@
 #include <fstream>
+#include <glm/vec2.hpp>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -39,13 +40,6 @@ TilemapComponent::~TilemapComponent()
     ResourceManager::instance().Tilemaps()->Destroy(mMapData);
 }
 
-void TilemapComponent::SetDisplayTileSize(unsigned int width,
-                                          unsigned int height)
-{
-    mDestTileWidth = width;
-    mDestTileHeight = height;
-}
-
 // render TilemapComponent
 void TilemapComponent::Render(RenderContext* ren)
 {
@@ -62,20 +56,19 @@ void TilemapComponent::Render(RenderContext* ren)
     }
 
     SDL_Rect Dest;
-    int mapWidth = mMapData->GetWidth();
-    int mapHeight = mMapData->GetHeight();
-    for (int y = 0; y < mapHeight; y++)
+    Size2D mapSize = mMapData->GetSize();
+
+    TileLoc tileLoc;
+    for (tileLoc.y = 0; tileLoc.y < mapSize.y; tileLoc.y++)
     {
-        for (int x = 0; x < mapWidth; x++)
+        for (tileLoc.x = 0; tileLoc.x < mapSize.x; tileLoc.x++)
         {
             // Select our Tile
-            int currentTile = mMapData->GetTile(x, y).type;
-            bool hasCollider = mMapData->GetTile(x, y).collider;
-            if (currentTile > -1)
-            {
-                GetTileDisplayRect(&Dest, ren, x, y);
-                mTextureAtlas->DrawTileAt(ren, currentTile, Dest, hasCollider);
-            }
+            const TileData tile = mMapData->GetTile(tileLoc);
+            if (tile.type < 0) continue;
+
+            GetTileDisplayRect(&Dest, ren, tileLoc);
+            mTextureAtlas->DrawTileAt(ren, tile.type, Dest, tile.bHasCollider);
         }
     }
 }
@@ -89,18 +82,19 @@ void TilemapComponent::GenerateMapFromFile(std::string filePath)
 }
 
 void TilemapComponent::GetTileDisplayRect(SDL_Rect* out_rect,
-                                          RenderContext* ren, int x, int y)
+                                          RenderContext* ren,
+                                          TileLoc tile) const
 {
-    out_rect->x = x * mDestTileWidth - ren->worldToCamera.x;
-    out_rect->y = y * mDestTileHeight - ren->worldToCamera.y;
-    out_rect->w = mDestTileWidth;
-    out_rect->h = mDestTileHeight;
+    out_rect->x = tile.x * mTileDisplaySize.x - ren->worldToCamera.x;
+    out_rect->y = tile.y * mTileDisplaySize.y - ren->worldToCamera.y;
+    out_rect->w = mTileDisplaySize.x;
+    out_rect->h = mTileDisplaySize.y;
 }
 
-Vec2D TilemapComponent::WorldPosToTilePos(Vec2D& worldPos)
+glm::vec2 TilemapComponent::WorldPosToTilePos(const glm::vec2& worldPos) const
 {
-    return Vec2D(floorf(worldPos.x / mDestTileWidth),
-                 floorf(worldPos.y / mDestTileHeight));
+    return glm::vec2(worldPos.x / mTileDisplaySize.x,
+                     worldPos.y / mTileDisplaySize.y);
 }
 
 std::shared_ptr<TilemapData> TilemapComponent::GetTileMapData()

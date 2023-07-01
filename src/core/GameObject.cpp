@@ -67,7 +67,7 @@ void GameObject::DrawGizmos(RenderContext* renderer, util::Gizmos* gizmos)
 }
 #endif
 
-bool GameObject::IsColliding(ColliderComponent* other, SDL_Rect* rectangle)
+bool GameObject::IsColliding(ColliderComponent* other, FRect* rectangle)
 {
     ColliderComponent* collider = (ColliderComponent*)GetComponent("collider");
     // Game object does not have a collider
@@ -79,8 +79,7 @@ bool GameObject::IsColliding(ColliderComponent* other, SDL_Rect* rectangle)
     return collider->CheckCollisionWithRectangle(rectangle);
 }
 
-bool GameObject::RaycastCollider(ColliderComponent* collider,
-                                 SDL_Rect* rectangle)
+bool GameObject::RaycastCollider(ColliderComponent* collider, FRect* rectangle)
 {
     return mEngine->IsColliding(collider, rectangle);
 }

@@ -17,7 +17,7 @@ void SpriteAnimator::Receive(const std::string& message)
 void SpriteAnimator::Render(RenderContext* renderer)
 {
     int spriteIndex =
-        mActiveAnimation.spritesheetRow * mSpritesheet->GetSpritesheetCols() +
+        mActiveAnimation.spritesheetRow * mSpritesheet->GetSize().x +
         (renderer->frameIdx / 12) % mActiveAnimation.frameCount;
     SetSpriteIndex(spriteIndex);
     SpriteRenderer::Render(renderer);

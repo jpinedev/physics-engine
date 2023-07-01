@@ -12,6 +12,8 @@
 
 #include "core/RenderContext.hpp"
 
+typedef glm::uvec2 Size2D;
+
 /**
  * This represents the notion of a spritesheet/texture atlas,
  * i.e an image file that is actually composed of smaller textures, but
@@ -28,26 +30,15 @@ public:
     Spritesheet(Spritesheet&& other) noexcept;
     ~Spritesheet();
 
-    /**
-     * Sets the tile size
-     * @param srcTileWidth Width
-     * @param srcTileHeight Height
-     */
-    void SetTileSize(unsigned int srcTileWidth, unsigned srcTileHeight);
-
-    /**
-     * Sets the sprite size
-     * @param srcTileWidth Width
-     * @param srcTileHeight Height
-     */
-    void SetSpriteSize(unsigned int srcTileWidth, unsigned srcTileHeight);
+    void SetSpriteSize(Size2D spriteSize);
+    inline void SetTileSize(Size2D tileSize) { SetSpriteSize(tileSize); }
 
     /**
      * Get the maximum number of tiles in the spritesheet.
      * Note: Does not ignore blank tiles.
      * @return Max number of tiles
      */
-    unsigned int Count();
+    inline unsigned int Count() { return mSize.x * mSize.y; }
 
     /**
      * Draws tile at the desired spot with the details given
@@ -68,26 +59,13 @@ public:
     void DrawSpriteAt(RenderContext* renderCtx, unsigned int spriteIndex,
                       SDL_Rect& dest);
 
-    /**
-     * Gets the number of columns in the spritesheet
-     * @return The number of columns
-     */
-    unsigned int GetSpritesheetCols();
-
-    /**
-     * Gets the number of rows in the spritesheet
-     * @return The number of rows
-     */
-    unsigned int GetSpritesheetRows();
+    inline Size2D GetSize() { return mSize; }
 
 private:
     std::shared_ptr<SDL_Texture> mTexture;
-    int mTextureWidth;
-    int mTextureHeight;
-    int mRows;
-    int mCols;
-    int mSrcTileWidth;
-    int mSrcTileHeight;
+    Size2D mTextureSize{0, 0};
+    Size2D mSize{0, 0};
+    Size2D mSpriteSize{0, 0};
 };
 
 #endif

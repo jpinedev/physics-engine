@@ -5,6 +5,7 @@
 #include <time.h>
 
 #include <fstream>
+#include <glm/vec2.hpp>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -13,7 +14,6 @@
 #include "core/GameObject.hpp"
 #include "core/IGraphicsEngineRenderer.hpp"
 #include "core/InputManager.hpp"
-#include "core/TinyMath.hpp"
 #include "core/UpdateContext.hpp"
 
 /**
@@ -43,7 +43,7 @@ public:
      * @param rectangle The second component we are checking
      * @return If the two components collided
      */
-    bool IsColliding(ColliderComponent* collider, SDL_Rect* rectangle);
+    bool IsColliding(ColliderComponent* collider, FRect* rectangle);
 
     void RunGameLoop();
 
@@ -104,8 +104,8 @@ private:
     util::Gizmos mGizmosUtil{};
 #endif
 
-    Vec2D mScreenSize;
-    Vec2D mScreenCenter;
+    glm::vec2 mScreenSize;
+    glm::vec2 mScreenCenter;
 
     /**
      * Our scene of game objects.

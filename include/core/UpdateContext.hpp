@@ -1,7 +1,7 @@
 #ifndef __UPDATECONTEXT_HPP__
 #define __UPDATECONTEXT_HPP__
 
-#include "core/TinyMath.hpp"
+#include <glm/vec2.hpp>
 
 #if defined(LINUX) || defined(MINGW)
 #include <SDL2/SDL.h>
@@ -17,7 +17,7 @@
  */
 struct UpdateContext
 {
-    Vec2D cameraCenter;
+    glm::vec2 cameraCenter;
     float deltaTime;
 };
 

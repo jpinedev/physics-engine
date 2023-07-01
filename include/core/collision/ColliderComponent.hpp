@@ -2,6 +2,7 @@
 #define __COLLIDER_HPP__
 
 #include <iostream>
+#include <string>
 
 #include "core/Component.hpp"
 
@@ -31,7 +32,7 @@ public:
      * @param rect The rectangle we are checking against
      * @return If we collided or not
      */
-    virtual bool CheckCollisionWithRectangle(SDL_Rect* rect);
+    virtual bool CheckCollisionWithRectangle(FRect* rect);
 
     /**
      * Check if collider collides with anything else in the scene
@@ -57,7 +58,7 @@ protected:
      * @param rect The rectangle we are checking collision with
      * @return True if there was a collision, else false
      */
-    virtual bool CollidesWithRectangle(SDL_Rect* rect) = 0;
+    virtual bool CollidesWithRectangle(FRect* rect) = 0;
 
 private:
     bool mIsTrigger = false;
