@@ -6,6 +6,7 @@
 #include "core/RenderContext.hpp"
 #include "core/ResourceManager.hpp"
 #include "core/UpdateContext.hpp"
+#include "core/physics/Rigidbody.hpp"
 
 #include <iterator>
 #include <map>
@@ -98,7 +99,15 @@ void Engine::Render()
 
     for (GameObject* pGO : mGameObjects)
     {
-        if (!pGO->IsActive()) continue;
+        if (pGO->IsActive())
+        {
+            pGO->DrawGizmos(&mRenderCtx, &mGizmosUtil);
+            continue;
+        }
+
+        Physics::Rigidbody* pRB = (Physics::Rigidbody*)pGO->GetComponent("rigidbody");
+        if (!pRB || !pRB->IsStatic()) continue;
+
         pGO->DrawGizmos(&mRenderCtx, &mGizmosUtil);
     }
 #endif

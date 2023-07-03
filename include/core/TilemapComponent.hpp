@@ -44,6 +44,7 @@ public:
      * @return the tile position in Vec2D
      */
     glm::vec2 WorldPosToTilePos(const glm::vec2& worldPos) const;
+    glm::vec2 TileLocToLocalPos(const TileLoc& tileLoc) const;
 
     void GetTileDisplayRect(SDL_Rect* out_rect, RenderContext* ren,
                             TileLoc tile) const;

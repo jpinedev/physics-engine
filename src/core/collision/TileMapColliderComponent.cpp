@@ -72,6 +72,28 @@ void TilemapColliderComponent::FindTilemapIfNull()
     mData = mTilemap->GetTileMapData();
 }
 
+void TilemapColliderComponent::GetBoundingBoxes(std::vector<Bounds>& out_bounds)
+{
+    Size2D tilemapSize = mData->GetSize();
+    out_bounds.reserve(tilemapSize.x * tilemapSize.y);
+
+    glm::vec2 pos = mGameObject->GetTransform().GetPosition();
+
+    TileLoc tileLoc;
+    for (tileLoc.y = 0; tileLoc.y < tilemapSize.y; ++tileLoc.y)
+    {
+        for (tileLoc.x = 0; tileLoc.x < tilemapSize.x; ++tileLoc.x)
+        {
+            if (!mData->GetTile(tileLoc).bHasCollider) continue;
+
+            out_bounds.emplace_back(
+                mTilemap->TileLocToLocalPos(tileLoc) + pos,
+                mTilemap->TileLocToLocalPos(tileLoc + glm::ivec2{1, 1}) + pos);
+        }
+    }
+    out_bounds.shrink_to_fit();
+}
+
 #ifdef GIZMOS
 void TilemapColliderComponent::DrawGizmos(RenderContext* renderer,
                                           util::Gizmos* util)

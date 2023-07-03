@@ -47,6 +47,11 @@ public:
      */
     virtual void SetIsTrigger(bool isTrigger);
 
+    virtual void GetBoundingBoxes(std::vector<Bounds>& out_bounds)
+    {
+        throw "<ColliderComponent>::GetBoundingBoxes is not implemented.";
+    }
+
 #ifdef GIZMOS
     virtual void DrawGizmos(RenderContext* renderer,
                             util::Gizmos* util) override = 0;

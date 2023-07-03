@@ -42,3 +42,18 @@ Bounds::Bounds(std::initializer_list<Bounds> toContain) noexcept
         bottom = glm::min(bottom, boundIt->bottom);
     }
 }
+
+bool Bounds::GetOverlap(const Bounds& other, Bounds* out_overlap) const
+{
+    if (left > other.right || top > other.bottom || right < other.left ||
+        bottom < other.top)
+        return false;
+
+    if (!out_overlap) return true;
+
+    out_overlap->left = glm::max(left, other.left);
+    out_overlap->top = glm::max(top, other.top);
+    out_overlap->left = glm::min(right, other.right);
+    out_overlap->left = glm::min(bottom, other.bottom);
+    return true;
+}

@@ -23,7 +23,8 @@ struct Bounds
     Bounds(std::initializer_list<glm::vec2> toContain) noexcept;
     Bounds(std::initializer_list<Bounds> toContain) noexcept;
     Bounds(const FRect& rect) : min(rect.pos), max(min + rect.size) {}
-    FRect ToFRect() { return FRect(min, max - min); }
+    FRect ToFRect() const { return FRect(min, max - min); }
+    bool GetOverlap(const Bounds& other, Bounds* out_overlap = NULL) const;
 
 private:
     bool mbInitialized{false};
