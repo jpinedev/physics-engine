@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     tilemapComponent->SetDisplayTileSize({64, 64});
     // Generate a a simple tilemap
     tilemapComponent->GenerateMapFromFile(
-        "./assets/mspj-engine/tilemaps/level01");
+        "./assets/mspj-engine/tilemaps/level0");
     (void)engine.InstantiateComponent<TilemapColliderComponent>(tilemapObject);
     (void)engine.InstantiateComponent<Physics::Rigidbody>(tilemapObject, true);
 
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     // Prepare the controller
     ControllerComponent* controller =
         engine.InstantiateComponent<ControllerComponent>(player);
-    player.GetTransform().SetPosition({-16, -16});
+    player.GetTransform().SetPosition({128, 64});
     // Prepare the sprite
     SpriteAnimator* sprite =
         engine.InstantiateComponent<SpriteAnimator>(player);

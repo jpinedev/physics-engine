@@ -74,6 +74,10 @@ void PhysicsEngine::FixedUpdate()
                 if (!bounds.GetOverlap((*dbIt)->GetBoundingBox(), &overlap))
                     continue;
 
+                if (overlap.left == overlap.right ||
+                    overlap.top == overlap.bottom)
+                    continue;
+
                 Hit2D hit = {overlap, true, staticBody.first};
 
                 HitArray& hitMap = hitMaps[*dbIt];

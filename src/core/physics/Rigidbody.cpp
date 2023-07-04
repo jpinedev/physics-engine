@@ -82,18 +82,20 @@ void Rigidbody::ResolveCollisions(const std::vector<Hit2D>& collisions)
         bool bCollidedHorizontal = bCollidedLeft != bCollidedRight;
         bool bCollidedVertical = bCollidedTop != bCollidedBottom;
 
+        glm::vec2 adjustment{0, 0};
+        // TODO: FIX CORNER COLLISIONS
         if (bCollidedHorizontal)
         {
             float collisionDist = overlap.right - overlap.left;
             if (bCollidedLeft)
             {
                 stopLeftVel = true;
-                netCollision.x += collisionDist;
+                adjustment.x = collisionDist;
             }
             else
             {
                 stopRightVel = true;
-                netCollision.x -= collisionDist;
+                adjustment.x = -collisionDist;
             }
         }
 
@@ -103,14 +105,24 @@ void Rigidbody::ResolveCollisions(const std::vector<Hit2D>& collisions)
             if (bCollidedTop)
             {
                 stopUpVel = true;
-                netCollision.y += collisionDist;
+                adjustment.y = collisionDist;
             }
             else
             {
                 stopDownVel = true;
-                netCollision.y -= collisionDist;
+                adjustment.y = -collisionDist;
             }
         }
+
+        if (bCollidedHorizontal && bCollidedVertical)
+        {
+            if (glm::abs(adjustment.x) < glm::abs(adjustment.y))
+                adjustment.y = 0;
+            else if (glm::abs(adjustment.x) > glm::abs(adjustment.y))
+                adjustment.x = 0;
+        }
+
+        netCollision += adjustment;
     }
 
     if ((stopLeftVel && mVel.x < 0) || (stopRightVel && mVel.x > 0)) mVel.x = 0;
