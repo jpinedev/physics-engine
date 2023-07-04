@@ -3,6 +3,7 @@
 #include "core/TransformComponent.hpp"
 #include "core/resources/TilemapData.hpp"
 
+#include <initializer_list>
 #include <stdexcept>
 
 #if defined(LINUX) || defined(MINGW)
@@ -14,10 +15,10 @@
 TilemapColliderComponent::TilemapColliderComponent() : ColliderComponent() {}
 TilemapColliderComponent::~TilemapColliderComponent() {}
 
+void TilemapColliderComponent::Start() { FindTilemapIfNull(); }
+
 bool TilemapColliderComponent::CollidesWithRectangle(FRect* rect)
 {
-    FindTilemapIfNull();
-
     glm::vec2 position = mGameObject->GetTransform().GetPosition();
 
     // Get the top left bounds of the tile that the rectangle *COULD* collide
@@ -70,6 +71,28 @@ void TilemapColliderComponent::FindTilemapIfNull()
     }
 
     mData = mTilemap->GetTileMapData();
+}
+
+void TilemapColliderComponent::GetBoundingBoxes(std::vector<Bounds>& out_bounds)
+{
+    Size2D tilemapSize = mData->GetSize();
+    out_bounds.reserve(tilemapSize.x * tilemapSize.y);
+
+    glm::vec2 pos = mGameObject->GetTransform().GetPosition();
+
+    TileLoc tileLoc;
+    for (tileLoc.y = 0; tileLoc.y < tilemapSize.y; ++tileLoc.y)
+    {
+        for (tileLoc.x = 0; tileLoc.x < tilemapSize.x; ++tileLoc.x)
+        {
+            if (!mData->GetTile(tileLoc).bHasCollider) continue;
+
+            out_bounds.emplace_back((std::initializer_list<glm::vec2>){
+                pos + mTilemap->TileLocToLocalPos(tileLoc),
+                pos + mTilemap->TileLocToLocalPos(tileLoc + glm::ivec2{1, 1})});
+        }
+    }
+    out_bounds.shrink_to_fit();
 }
 
 #ifdef GIZMOS

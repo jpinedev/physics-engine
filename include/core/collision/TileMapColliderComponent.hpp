@@ -29,11 +29,15 @@ public:
      */
     virtual ~TilemapColliderComponent();
 
+    virtual void Start() override;
+
     /**
      * Check if collider collides with anything else in the scene
      * @return If we collided with anything.
      */
     virtual bool RaycastColliderRectangle() override;
+
+    virtual void GetBoundingBoxes(std::vector<Bounds>& out_bounds) override;
 
 #ifdef GIZMOS
     virtual void DrawGizmos(RenderContext* renderer,

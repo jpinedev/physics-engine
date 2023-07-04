@@ -64,7 +64,7 @@ void TilemapComponent::Render(RenderContext* ren)
         for (tileLoc.x = 0; tileLoc.x < mapSize.x; tileLoc.x++)
         {
             // Select our Tile
-            const TileData tile = mMapData->GetTile(tileLoc);
+            const TileData& tile = mMapData->GetTile(tileLoc);
             if (tile.type < 0) continue;
 
             GetTileDisplayRect(&Dest, ren, tileLoc);
@@ -95,6 +95,12 @@ glm::vec2 TilemapComponent::WorldPosToTilePos(const glm::vec2& worldPos) const
 {
     return glm::vec2(worldPos.x / mTileDisplaySize.x,
                      worldPos.y / mTileDisplaySize.y);
+}
+
+glm::vec2 TilemapComponent::TileLocToLocalPos(const TileLoc& tileLoc) const
+{
+    return glm::vec2(tileLoc.x * mTileDisplaySize.x,
+                     tileLoc.y * mTileDisplaySize.y);
 }
 
 std::shared_ptr<TilemapData> TilemapComponent::GetTileMapData()

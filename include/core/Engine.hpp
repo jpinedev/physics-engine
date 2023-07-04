@@ -11,10 +11,18 @@
 #include <sstream>
 #include <string>
 
+#include "core/Component.hpp"
 #include "core/GameObject.hpp"
-#include "core/IGraphicsEngineRenderer.hpp"
-#include "core/InputManager.hpp"
+#include "core/RenderContext.hpp"
 #include "core/UpdateContext.hpp"
+
+class InputManager;
+class InputState;
+class SDLGraphicsEngineRenderer;
+namespace Physics
+{
+class PhysicsEngine;
+}
 
 /**
  * This class sets up the main game engine and all necessary subsystems.
@@ -63,6 +71,8 @@ public:
      */
     void InitializeGraphicsSubSystem();
 
+    void InitializePhysicsEngine(float fixedTimestep);
+
     /**
      * Request to startup the User Input System
      */
@@ -93,10 +103,11 @@ public:
     }
 
 private:
-    // Engine Subsystem
-    SDLGraphicsEngineRenderer* mRenderer = nullptr;
+    // Rendering subsystem
+    SDLGraphicsEngineRenderer* mpRenderer = NULL;
+    Physics::PhysicsEngine* mpPhysics = NULL;
     // Input management system
-    InputManager* mInput = nullptr;
+    InputManager* mpInput = NULL;
 
     UpdateContext mUpdateCtx;
     RenderContext mRenderCtx;

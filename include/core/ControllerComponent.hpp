@@ -3,6 +3,13 @@
 
 #include "core/Component.hpp"
 #include "core/UpdateContext.hpp"
+
+struct UpdateContext;
+namespace Physics
+{
+class Rigidbody;
+}
+
 /**
  * A player controller component for moving a character through the world.
  */
@@ -19,6 +26,8 @@ public:
      */
     virtual ~ControllerComponent();
 
+    virtual void Start() override;
+
     /**
      * An update loop for a component
      * @param update The update data that operates the update loop
@@ -34,6 +43,7 @@ public:
     void SetSpeed(float val);
 
 private:
+    Physics::Rigidbody* mpRigidbody = NULL;
     float mMoveSpeed = 64.0f;
 };
 

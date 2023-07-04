@@ -8,7 +8,7 @@ LIBS=
 CORESRC=src/core/*.cpp src/core/*/*.cpp
 GAMESRC=src/game/*.cpp
 
-GAMENAME=creative-refresh-platformer
+GAMENAME=enginering-challenge-platformer
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CC       :=g++

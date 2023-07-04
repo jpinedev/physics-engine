@@ -23,7 +23,9 @@ struct FRect
         };
     };
 
-    FRect(glm::vec2 pos, glm::vec2 size) : pos(pos), size(size) {}
+    FRect() {}
+    FRect(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {}
+    FRect(const glm::vec2 pos, const glm::vec2 size) : pos(pos), size(size) {}
     FRect(const SDL_Rect& rect) : x(rect.x), y(rect.y), w(rect.w), h(rect.h) {}
     FRect& operator=(const SDL_Rect& rect)
     {

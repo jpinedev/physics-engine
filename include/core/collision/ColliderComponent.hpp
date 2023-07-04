@@ -45,7 +45,13 @@ public:
      * @param isTrigger If true, then this is a trigger, if false it is a
      * collider
      */
-    virtual void SetIsTrigger(bool isTrigger);
+    virtual void SetIsTrigger(bool isTrigger) { mIsTrigger = isTrigger; }
+
+    virtual void GetBoundingBoxes(std::vector<Bounds>& out_bounds)
+    {
+        throw std::runtime_error(
+            "<ColliderComponent>::GetBoundingBoxes is not implemented.");
+    }
 
 #ifdef GIZMOS
     virtual void DrawGizmos(RenderContext* renderer,

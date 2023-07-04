@@ -41,6 +41,14 @@ GameObject::~GameObject()
     }
 }
 
+void GameObject::Start()
+{
+    for (Component* component : mComponents)
+    {
+        component->Start();
+    }
+}
+
 void GameObject::Update(UpdateContext* update)
 {
     for (Component* component : mComponents)
