@@ -16,5 +16,3 @@ bool ColliderComponent::CheckCollisionWithRectangle(FRect* rect)
 
     return !mIsTrigger && collides;
 }
-
-void ColliderComponent::SetIsTrigger(bool isTrigger) { mIsTrigger = isTrigger; }

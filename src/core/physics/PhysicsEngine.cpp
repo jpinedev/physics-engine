@@ -1,10 +1,14 @@
 #include "core/physics/PhysicsEngine.hpp"
 
 #include <chrono>
-#include <thread>
+#include <csignal>
 #include <unordered_map>
+#include "core/Engine.hpp"
 #include "core/physics/Rigidbody.hpp"
 #include "core/util/SDLConversions.hpp"
+
+#include <sys/signal.h>
+#include <unistd.h>
 
 namespace Physics
 {
@@ -18,16 +22,20 @@ PhysicsEngine::PhysicsEngine(Engine* engine, float fixedTimestep)
     mpPhysicsEngine = this;
 }
 
+/*
 void PhysicsEngine::RunPhysicsSimulation()
 {
     mbShouldClose = false;
-    mThread = std::thread(&PhysicsEngine::RunLoop, *this);
+    mSubprocess = fork();
+    if (mSubprocess) return;
+
+    RunLoop();
 }
 
 void PhysicsEngine::Shutdown()
 {
     mbShouldClose = true;
-    mThread.join();
+    //kill(mSubprocess, SIGKILL);
 }
 
 void PhysicsEngine::RunLoop()
@@ -45,24 +53,51 @@ void PhysicsEngine::RunLoop()
         std::cout << "Physics update.\n";
     }
 }
+*/
 
 void PhysicsEngine::FixedUpdate()
 {
-    std::unordered_map<Rigidbody*, std::unordered_map<Rigidbody*, Hit2D>>
-        hitMap;
-    Bounds overlap{glm::vec2{0,0}};
+    typedef std::vector<Hit2D> HitArray;
+    typedef std::unordered_map<Rigidbody*, HitArray> HitMap;
 
+    HitMap hitMaps;
+    Bounds overlap{glm::vec2{0, 0}};
+
+    // TODO: split up into multiple jobs
     auto dbIt = mDynamicBodies.begin(), dbItEnd = mDynamicBodies.end();
     for (; dbIt != dbItEnd; ++dbIt)
     {
-        for (auto staticBody : mStaticBodies)
+        for (StaticRigidbodyBoundsMap::reference staticBody : mStaticBodies)
         {
-            for (auto bounds : staticBody.second)
+            for (auto& bounds : staticBody.second)
             {
                 if (!bounds.GetOverlap((*dbIt)->GetBoundingBox(), &overlap))
                     continue;
+
+                Hit2D hit = {overlap, true, staticBody.first};
+
+                HitArray& hitMap = hitMaps[*dbIt];
+                hitMap.emplace_back(hit);
+                // TODO: Do I need to handle collisions on static bodies?
             }
         }
+    }
+    // TODO: join all threads
+
+    // TODO: split up into multiple jobs
+    dbIt = mDynamicBodies.begin();
+    for (; dbIt != dbItEnd; ++dbIt)
+    {
+        if (!hitMaps.count(*dbIt)) continue;
+
+        (*dbIt)->ResolveCollisions(hitMaps[*dbIt]);
+    }
+    // TODO: join all threads
+
+    dbIt = mDynamicBodies.begin();
+    for (; dbIt != dbItEnd; ++dbIt)
+    {
+        (*dbIt)->FixedUpdate(&mUpdateContext);
     }
 }
 

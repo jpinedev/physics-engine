@@ -99,7 +99,8 @@ glm::vec2 TilemapComponent::WorldPosToTilePos(const glm::vec2& worldPos) const
 
 glm::vec2 TilemapComponent::TileLocToLocalPos(const TileLoc& tileLoc) const
 {
-    return glm::vec2(tileLoc.x * mTileDisplaySize.x, tileLoc.y * mTileDisplaySize.y);
+    return glm::vec2(tileLoc.x * mTileDisplaySize.x,
+                     tileLoc.y * mTileDisplaySize.y);
 }
 
 std::shared_ptr<TilemapData> TilemapComponent::GetTileMapData()

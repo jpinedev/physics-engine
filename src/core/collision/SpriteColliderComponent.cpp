@@ -27,6 +27,12 @@ bool SpriteColliderComponent::RaycastColliderRectangle()
                                         &colliderRect);
 }
 
+void SpriteColliderComponent::GetBoundingBoxes(std::vector<Bounds>& out_bounds)
+{
+    FRect colliderRect = GetCollisionRect();
+    out_bounds.emplace_back(colliderRect);
+}
+
 void SpriteColliderComponent::FindSpriteRendererIfNull()
 {
     if (mSpriteRenderer) return;

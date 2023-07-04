@@ -29,6 +29,8 @@ public:
      */
     virtual ~TilemapColliderComponent();
 
+    virtual void Start() override;
+
     /**
      * Check if collider collides with anything else in the scene
      * @return If we collided with anything.

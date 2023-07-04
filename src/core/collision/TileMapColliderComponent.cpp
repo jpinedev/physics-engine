@@ -3,6 +3,7 @@
 #include "core/TransformComponent.hpp"
 #include "core/resources/TilemapData.hpp"
 
+#include <initializer_list>
 #include <stdexcept>
 
 #if defined(LINUX) || defined(MINGW)
@@ -14,10 +15,10 @@
 TilemapColliderComponent::TilemapColliderComponent() : ColliderComponent() {}
 TilemapColliderComponent::~TilemapColliderComponent() {}
 
+void TilemapColliderComponent::Start() { FindTilemapIfNull(); }
+
 bool TilemapColliderComponent::CollidesWithRectangle(FRect* rect)
 {
-    FindTilemapIfNull();
-
     glm::vec2 position = mGameObject->GetTransform().GetPosition();
 
     // Get the top left bounds of the tile that the rectangle *COULD* collide
@@ -86,9 +87,9 @@ void TilemapColliderComponent::GetBoundingBoxes(std::vector<Bounds>& out_bounds)
         {
             if (!mData->GetTile(tileLoc).bHasCollider) continue;
 
-            out_bounds.emplace_back(
-                mTilemap->TileLocToLocalPos(tileLoc) + pos,
-                mTilemap->TileLocToLocalPos(tileLoc + glm::ivec2{1, 1}) + pos);
+            out_bounds.emplace_back((std::initializer_list<glm::vec2>){
+                pos + mTilemap->TileLocToLocalPos(tileLoc),
+                pos + mTilemap->TileLocToLocalPos(tileLoc + glm::ivec2{1, 1})});
         }
     }
     out_bounds.shrink_to_fit();

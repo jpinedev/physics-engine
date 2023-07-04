@@ -53,6 +53,11 @@ public:
     ~GameObject();
 
     /**
+     * Life cycle event to initialize the game object and its components
+     */
+    void Start();
+
+    /**
      * Life cycle event to update the game object and its components every frame
      * @param update The update data that operates the update loop
      */

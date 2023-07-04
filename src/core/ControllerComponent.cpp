@@ -4,27 +4,38 @@
 #include "core/TransformComponent.hpp"
 #include "core/UpdateContext.hpp"
 #include "core/collision/ColliderComponent.hpp"
+#include "core/physics/Rigidbody.hpp"
 
 #include <cinttypes>
 #include <glm/vec2.hpp>
 #include <iostream>
+#include <stdexcept>
 
 ControllerComponent::ControllerComponent() : Component("controller") {}
 
 ControllerComponent::~ControllerComponent() {}
 
+void ControllerComponent::Start()
+{
+    mpRigidbody = (Physics::Rigidbody*)mGameObject->GetComponent("rigidbody");
+    if (!mpRigidbody)
+        throw std::runtime_error(
+            "ControllerComponent does not have a Rigidbody.");
+}
+
 void ControllerComponent::Update(UpdateContext* update)
 {
-    TransformComponent& transform = mGameObject->GetTransform();
-
     int horizontal = InputManager::State->GetAxis("D", "A");
     int vertical = -InputManager::State->GetAxis("W", "S");
+
+    // TODO: Extract camera follow code to separate component.
+    update->cameraCenter = mpRigidbody->GetPosition();
 
     if (horizontal == 0 && vertical == 0)
     {
         // idle
         mGameObject->BroadcastMessage("idle");
-        update->cameraCenter = transform.GetPosition();
+        mpRigidbody->SetVelocity({0, 0});
         return;
     }
 
@@ -49,22 +60,10 @@ void ControllerComponent::Update(UpdateContext* update)
         mGameObject->BroadcastMessage("move_up");
     }
 
-    glm::vec2 move(horizontal, vertical);
+    glm::vec2 move{horizontal, vertical};
     move = glm::normalize(move);
-    move *= mMoveSpeed * update->deltaTime;
-    transform.TranslatePosition(move.x, move.y);
 
-    ColliderComponent* collider =
-        (ColliderComponent*)mGameObject->GetComponent("collider");
-
-    // move gameobject back if collides
-    if (collider)
-    {
-        if (collider->RaycastColliderRectangle())
-            transform.TranslatePosition(-move.x, -move.y);
-    }
-
-    update->cameraCenter = transform.GetPosition();
+    mpRigidbody->SetVelocity(move * mMoveSpeed);
 }
 
 void ControllerComponent::SetSpeed(float val) { mMoveSpeed = val; }

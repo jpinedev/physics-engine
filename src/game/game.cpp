@@ -12,6 +12,7 @@
 #include "core/TransformComponent.hpp"
 #include "core/collision/SpriteColliderComponent.hpp"
 #include "core/collision/TilemapColliderComponent.hpp"
+#include "core/physics/Rigidbody.hpp"
 #include "core/resources/Spritesheet.hpp"
 
 #include <iostream>
@@ -23,6 +24,7 @@ int main(int argc, char** argv)
     Engine engine;
     // Initialize the Engine Subsystems
     engine.InitializeGraphicsSubSystem();
+    engine.InitializePhysicsEngine(1.f / 60.f);
     engine.InitializeInputSystem();
     // Once all subsystems have been initialized
     // Start the engine
@@ -46,9 +48,9 @@ int main(int argc, char** argv)
     tilemapComponent->SetDisplayTileSize({64, 64});
     // Generate a a simple tilemap
     tilemapComponent->GenerateMapFromFile(
-        "./assets/mspj-engine/tilemaps/level0");
-    TilemapColliderComponent* tilemapCollider =
-        engine.InstantiateComponent<TilemapColliderComponent>(tilemapObject);
+        "./assets/mspj-engine/tilemaps/level01");
+    (void)engine.InstantiateComponent<TilemapColliderComponent>(tilemapObject);
+    (void)engine.InstantiateComponent<Physics::Rigidbody>(tilemapObject, true);
 
     // Note: Player must be created after the tilemap to be rendered after
     // (above) the tilemap Create our player game object, all components created
@@ -57,7 +59,7 @@ int main(int argc, char** argv)
     // Prepare the controller
     ControllerComponent* controller =
         engine.InstantiateComponent<ControllerComponent>(player);
-    player.GetTransform().SetPosition({128, 64});
+    player.GetTransform().SetPosition({-16, -16});
     // Prepare the sprite
     SpriteAnimator* sprite =
         engine.InstantiateComponent<SpriteAnimator>(player);
@@ -75,8 +77,8 @@ int main(int argc, char** argv)
     sprite->SetAnimation("move_left", 2, 4);
     sprite->SetAnimation("move_right", 3, 4);
     sprite->SetAnimation("idle", 4, 2);
-    SpriteColliderComponent* spriteCollider =
-        engine.InstantiateComponent<SpriteColliderComponent>(player);
+    (void)engine.InstantiateComponent<SpriteColliderComponent>(player);
+    (void)engine.InstantiateComponent<Physics::Rigidbody>(player, false);
 
     int numMushrooms = 3;
     int collectedCount = 0;

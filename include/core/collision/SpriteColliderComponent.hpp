@@ -33,6 +33,8 @@ public:
      */
     virtual bool RaycastColliderRectangle() override;
 
+    void GetBoundingBoxes(std::vector<Bounds>& out_bounds) override;
+
 #ifdef GIZMOS
     virtual void DrawGizmos(RenderContext* renderer,
                             util::Gizmos* util) override;

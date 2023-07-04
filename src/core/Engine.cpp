@@ -6,11 +6,13 @@
 #include "core/RenderContext.hpp"
 #include "core/ResourceManager.hpp"
 #include "core/UpdateContext.hpp"
+#include "core/physics/PhysicsEngine.hpp"
 #include "core/physics/Rigidbody.hpp"
 
 #include <iterator>
 #include <map>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 #if defined(LINUX) || defined(MINGW)
@@ -42,8 +44,8 @@ void Engine::Input(bool* quit)
         // An example is hitting the "x" in the corner of the window.
         if (e.type == SDL_QUIT)
             *quit = true;
-        else if (mInput)
-            mInput->HandleEvent(e);
+        else if (mpInput)
+            mpInput->HandleEvent(e);
     }
 }
 
@@ -59,9 +61,9 @@ void Engine::Update()
 void Engine::Render()
 {
     // Set the color of the empty framebuffer
-    mRenderer->SetRenderDrawColor(0, 0, 0, 0xFF);
+    mpRenderer->SetRenderDrawColor(0, 0, 0, 0xFF);
     // Clear the screen to the color of the empty framebuffer
-    mRenderer->RenderClear();
+    mpRenderer->RenderClear();
 
     // NOTE: We have to dynamic_cast here, because we do not exactly know the
     // type
@@ -79,7 +81,7 @@ void Engine::Render()
     // either an
     //       assertion or exception the behavior.
     SDL_Renderer* renderer =
-        dynamic_cast<SDLGraphicsEngineRenderer*>(mRenderer)->GetRenderer();
+        dynamic_cast<SDLGraphicsEngineRenderer*>(mpRenderer)->GetRenderer();
 
     mRenderCtx.renderer = renderer;
     mRenderCtx.worldToCamera = mUpdateCtx.cameraCenter - mScreenCenter;
@@ -105,7 +107,8 @@ void Engine::Render()
             continue;
         }
 
-        Physics::Rigidbody* pRB = (Physics::Rigidbody*)pGO->GetComponent("rigidbody");
+        Physics::Rigidbody* pRB =
+            (Physics::Rigidbody*)pGO->GetComponent("rigidbody");
         if (!pRB || !pRB->IsStatic()) continue;
 
         pGO->DrawGizmos(&mRenderCtx, &mGizmosUtil);
@@ -113,7 +116,7 @@ void Engine::Render()
 #endif
 
     // Flip the buffer to render
-    mRenderer->RenderPresent();
+    mpRenderer->RenderPresent();
 }
 
 // check if colliding
@@ -135,6 +138,11 @@ bool Engine::IsColliding(ColliderComponent* collider, FRect* rectangle)
 // Loops forever!
 void Engine::RunGameLoop()
 {
+    for (GameObject* object : mGameObjects)
+    {
+        object->Start();
+    }
+
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
     bool quit = false;
@@ -146,6 +154,7 @@ void Engine::RunGameLoop()
         Input(&quit);
         // If you have time, implement your frame capping code here
         // Otherwise, this is a cheap hack for this lab.
+        mpPhysics->Update();
         SDL_Delay(16);
         // Update our scene with the context
         mUpdateCtx.deltaTime = 0.016f;
@@ -162,7 +171,7 @@ void Engine::RunGameLoop()
 void Engine::Startup()
 {
     // Report which subsystems are being initialized
-    if (mRenderer != nullptr)
+    if (mpRenderer != nullptr)
     {
         std::cout << "Initializing Graphics Subsystem\n";
     }
@@ -172,14 +181,14 @@ void Engine::Startup()
     }
 
     SDLGraphicsEngineRenderer* graphicsEngine =
-        dynamic_cast<SDLGraphicsEngineRenderer*>(mRenderer);
+        dynamic_cast<SDLGraphicsEngineRenderer*>(mpRenderer);
     SDL_Renderer* renderer = graphicsEngine->GetRenderer();
     ResourceManager::instance().Startup(renderer);
 
-    if (mInput)
+    if (mpInput)
     {
         Uint32 windowId = SDL_GetWindowID(graphicsEngine->GetWindow());
-        mInput->SetMainWindow(windowId);
+        mpInput->SetMainWindow(windowId);
     }
 }
 
@@ -191,16 +200,12 @@ void Engine::Shutdown()
     ResourceManager::instance().Shutdown();
 
     // Shut down our Graphics Subsystem
-    if (nullptr != mRenderer)
-    {
-        delete mRenderer;
-    }
+    if (nullptr != mpRenderer) delete mpRenderer;
+
+    if (mpPhysics) delete mpPhysics;
 
     // Shut down our Input System
-    if (nullptr != mInput)
-    {
-        delete mInput;
-    }
+    if (nullptr != mpInput) delete mpInput;
 }
 
 void Engine::InitializeGraphicsSubSystem()
@@ -208,8 +213,8 @@ void Engine::InitializeGraphicsSubSystem()
     // Setup our Renderer
     mScreenSize = glm::vec2(1280, 720);
     mScreenCenter = mScreenSize * 0.5f;
-    mRenderer = new SDLGraphicsEngineRenderer(mScreenSize.x, mScreenSize.y);
-    if (nullptr == mRenderer)
+    mpRenderer = new SDLGraphicsEngineRenderer(mScreenSize.x, mScreenSize.y);
+    if (nullptr == mpRenderer)
     {
         exit(1);  // Terminate program if renderer
                   // cannot be created.
@@ -220,11 +225,19 @@ void Engine::InitializeGraphicsSubSystem()
     }
 }
 
+void Engine::InitializePhysicsEngine(float fixedTimestep)
+{
+    mpPhysics = new Physics::PhysicsEngine(this, fixedTimestep);
+    if (!mpPhysics)
+        throw std::runtime_error("Error setting up Physics Engine.");
+}
+
 InputState* Engine::InitializeInputSystem()
 {
     // Setup our input manager
-    mInput = new InputManager();
-    return mInput;
+    mpInput = new InputManager();
+    if (!mpInput) throw std::runtime_error("Error setting up Input system.");
+    return mpInput;
 }
 
 GameObject& Engine::InstantiateGameObject()

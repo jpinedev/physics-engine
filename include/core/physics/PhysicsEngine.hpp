@@ -2,6 +2,7 @@
 #define __PHYSICS_ENGING_HPP__
 
 #include <pthread.h>
+#include <sys/_types/_pid_t.h>
 #include <cassert>
 #include <set>
 #include <thread>
@@ -49,6 +50,7 @@ public:
     void SetGravity(glm::vec2 gravity) { mUpdateContext.gravity = gravity; }
 
     void RunPhysicsSimulation();
+    void Update() { FixedUpdate(); }
 
     void Shutdown();
 
@@ -57,13 +59,18 @@ private:
     void FixedUpdate();
 
 private:
+    typedef std::vector<Bounds> BoundsArray;
+    typedef std::unordered_map<Rigidbody*, const BoundsArray>
+        StaticRigidbodyBoundsMap;
+    typedef std::set<Rigidbody*> RigidbodySet;
+
     static PhysicsEngine* mpPhysicsEngine;
     Engine* mpEngine = NULL;
 
-    std::thread mThread;
+    pid_t mSubprocess = 0;
 
-    std::unordered_map<Rigidbody*, const std::vector<Bounds>> mStaticBodies;
-    std::set<Rigidbody*> mDynamicBodies;
+    StaticRigidbodyBoundsMap mStaticBodies;
+    RigidbodySet mDynamicBodies;
 
     PhysicsUpdateContext mUpdateContext;
     std::chrono::duration<float> mFixedTimestep;
